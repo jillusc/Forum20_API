@@ -14,13 +14,16 @@ from pathlib import Path
 import os
 
 if os.path.exists('env.py'):
-    import env 
+    import env
 
 CLOUDINARY_STORAGE = {
-	'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
+    'CLOUD_NAME': 'dcipycm5s',
+    'API_KEY': '454178858863336',
+    'API_SECRET': 'QdJF0gf9YvvvZza3y0dKIEw36ZY'
 }
 MEDIA_URL = '/media/'
-DEFAULT_MEDIA_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -35,7 +38,7 @@ SECRET_KEY = 'django-insecure-wc&rgy&tjux^$3ox0+6!uv$2c_ai7fd^76^npp&dp62((8+gp=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['8000-jillusc-forum20api-6bbgni54keo.ws-eu110.gitpod.io']
 
 
 # Application definition
@@ -49,6 +52,8 @@ INSTALLED_APPS = [
     'cloudinary_storage',
     'django.contrib.staticfiles',
     'cloudinary',
+    
+    'profiles',
 ]
 
 MIDDLEWARE = [
