@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import re
 from pathlib import Path
 import os
 import dj_database_url
@@ -18,9 +18,7 @@ if os.path.exists('env.py'):
     import env
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dcipycm5s',
-    'API_KEY': '454178858863336',
-    'API_SECRET': 'QdJF0gf9YvvvZza3y0dKIEw36ZY'
+    'CLOUDINARY_URL': os.getenv('CLOUDINARY_URL')
 }
 MEDIA_URL = '/media/'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
@@ -61,9 +59,11 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'DEV' in os.environ
 
-ALLOWED_HOSTS = ['8000-jillusc-forum20api-6bbgni54keo.ws-eu110.gitpod.io',
-                 'forum20.herokuapp.com']
-
+ALLOWED_HOSTS = [
+    os.environ.get('ALLOWED_HOST'),
+   'localhost',
+   '8000-jillusc-forum20api-6bbgni54keo.ws-eu110.gitpod.io'
+]
 
 # Application definition
 
@@ -104,18 +104,16 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-if 'CLIENT_ORIGIN' in os.environ:
-    CORS_ALLOWED_ORIGINS = [
-        os.environ.get('CLIENT_ORIGIN')
-    ]
-else:
+
+if 'CLIENT_ORIGIN_DEV' in os.environ:
+    extracted_url = re.match(r'^.+-', os.environ.get('CLIENT_ORIGIN_DEV', ''), re.IGNORECASE).group(0)
     CORS_ALLOWED_ORIGIN_REGEXES = [
-        r"^https://.*\.gitpod\.io$",
+        rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
     ]
 
 CORS_ALLOW_CREDENTIALS = True
 JWT_AUTH_COOKIE = 'my-app-auth'
-JWT_AUTH_REFRESH_COOKE = 'my-refresh-token'
+JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 JWT_AUTH_SAMESITE = 'None'
 
 ROOT_URLCONF = 'Forum20_API.urls'
