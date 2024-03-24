@@ -7,6 +7,13 @@ from .serializers import PostSerializer
 
 
 class PostList(generics.ListCreateAPIView):
+    """
+    Enables viewing of posts, and creation of posts only by logged-in users.
+    Posts display counts of likes and comments and are ordered by creation date,
+    newest first. Enables filtering of posts by profiles and searching by title
+    or username, as well as sorting by likes count, comments count and most
+    recently liked. New posts are assigned to the currently authenticated user.
+    """
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Post.objects.annotate(
@@ -37,6 +44,11 @@ class PostList(generics.ListCreateAPIView):
 
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Enables detailed viewing of a post, and updating and deletion of a post
+    only by its owner. Posts display counts of likes and comments and are
+    ordered by creation date, newest first.
+    """
     serializer_class = PostSerializer
     permission_classes = [IsOwnerOrReadOnly]
     queryset = Post.objects.annotate(

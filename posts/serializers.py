@@ -15,11 +15,14 @@ class PostSerializer(serializers.ModelSerializer):
     def validate_image(self, value):
         if hasattr(value, 'size'):
             if value.size > 2 * 1024 * 1024:
-                raise serializers.ValidationError('Image size must be max. 2MB!')
+                raise serializers.ValidationError
+                ('Image size must be max. 2MB!')
             if value.image.height > 4096:
-                raise serializers.ValidationError('Image height must be max. 4096px!')
+                raise serializers.ValidationError
+                ('Image height must be max. 4096px!')
             if value.image.width > 4096:
-                raise serializers.ValidationError('Image width must be max. 4096px!')
+                raise serializers.ValidationError
+                ('Image width must be max. 4096px!')
         else:
             return value
         return value
@@ -37,10 +40,10 @@ class PostSerializer(serializers.ModelSerializer):
             return like.id if like else None
         return None
 
-    class Meta: 
+    class Meta:
         model = Post
         fields = [
-            'id', 'owner', 'is_owner', 'profile_id', 'profile_image', 
+            'id', 'owner', 'is_owner', 'profile_id', 'profile_image',
             'created_at', 'updated_at', 'title', 'content', 'image',
             'image_filter', 'like_id', 'like_id', 'likes_count',
             'comments_count',

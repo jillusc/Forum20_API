@@ -5,6 +5,10 @@ from .serializers import FollowerSerializer
 
 
 class FollowerList(generics.ListCreateAPIView):
+    """
+    Enables viewing of followers, and adding of followers only by logged-in
+    users. New followers are assigned to the currently authenticated user.
+    """
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Follower.objects.all()
     serializer_class = FollowerSerializer
@@ -14,6 +18,10 @@ class FollowerList(generics.ListCreateAPIView):
 
 
 class FollowerDetail(generics.RetrieveDestroyAPIView):
+    """
+    Enables viewing of followers, and deletion of followers only by their
+    owner.
+    """
     permission_classes = [IsOwnerOrReadOnly]
     queryset = Follower.objects.all()
     serializer_class = FollowerSerializer
