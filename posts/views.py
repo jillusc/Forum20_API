@@ -5,14 +5,14 @@ from Forum20_API.permissions import IsOwnerOrReadOnly
 from .models import Post
 from .serializers import PostSerializer
 
-
 class PostList(generics.ListCreateAPIView):
     """
     Enables viewing of posts, and creation of posts only by logged-in users.
     Posts display counts of likes and comments and are ordered by creation date,
-    newest first. Enables filtering of posts by profiles and searching by title
-    or username, as well as sorting by likes count, comments count and most
-    recently liked. New posts are assigned to the currently authenticated user.
+    newest first. Enables filtering of posts by profiles and searching by title,
+    content and username, as well as sorting by likes count, comments count and
+    most recently liked. New posts are assigned to the currently authenticated
+    user.
     """
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -33,6 +33,7 @@ class PostList(generics.ListCreateAPIView):
     search_fields = [
         'owner__username',
         'title',
+        'content',
     ]
     ordering_fields = [
         'likes_count',

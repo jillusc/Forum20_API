@@ -13,16 +13,18 @@ class PostSerializer(serializers.ModelSerializer):
     comments_count = serializers.ReadOnlyField()
 
     def validate_image(self, value):
+        if not value:
+            raise serializers.ValidationError("Please upload an image.")
         if hasattr(value, 'size'):
             if value.size > 2 * 1024 * 1024:
-                raise serializers.ValidationError
-                ('Image size must be max. 2MB!')
+                raise serializers.ValidationError(
+                'Image size must be max. 2MB!')
             if value.image.height > 4096:
-                raise serializers.ValidationError
-                ('Image height must be max. 4096px!')
+                raise serializers.ValidationError(
+                'Image height must be max. 4096px!')
             if value.image.width > 4096:
-                raise serializers.ValidationError
-                ('Image width must be max. 4096px!')
+                raise serializers.ValidationError(
+                'Image width must be max. 4096px!')
         else:
             return value
         return value
