@@ -5,6 +5,7 @@ from followers.models import Follower
 
 class ProfileSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
+    image = serializers.ImageField(required=False)
     is_owner = serializers.SerializerMethodField()
     following_id = serializers.SerializerMethodField()
     posts_count = serializers.ReadOnlyField()
