@@ -9,7 +9,8 @@ class CommentList(generics.ListCreateAPIView):
     """
     Enables viewing of comments, and creation of comments only by logged-in
     users. Enables filtering by posts. New comments are assigned to the
-    currently authenticated user.
+    currently authenticated user. Allows for filtering of comments that
+    belong to the authenticated user. 
     """
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -19,6 +20,12 @@ class CommentList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.query_params.get('user_comments') == 'true':
+            return queryset.filter(owner=self.request.user)
+        return queryset
 
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
