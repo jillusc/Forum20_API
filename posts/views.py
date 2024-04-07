@@ -1,5 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Count
+from django.db.models import Q, Count
 from rest_framework import generics, permissions, filters
 from Forum20_API.permissions import IsOwnerOrReadOnly
 from .models import Post
@@ -12,14 +12,11 @@ class PostList(generics.ListCreateAPIView):
     newest first. Enables filtering of posts by profiles and searching by title,
     content and username, as well as sorting by likes count, comments count and
     most recently liked. New posts are assigned to the currently authenticated
-    user.
-    """
+    user. Additionally, authenticated users can mark posts as private, making them
+    visible to only themselves and their followers.
+    """ 
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = Post.objects.annotate(
-        likes_count=Count('likes', distinct=True),
-        comments_count=Count('comment', distinct=True)
-    ).order_by('-created_at')
     filter_backends = [
         filters.OrderingFilter,
         filters.SearchFilter,
@@ -40,6 +37,33 @@ class PostList(generics.ListCreateAPIView):
         'comments_count',
         'likes__created_at',
     ]
+
+    queryset = Post.objects.all()
+
+    def get_queryset(self):
+        """
+        Fetches posts for the view using the Q object which enables complex queries.
+        If the user is logged-in, it gets both public posts and the user's private posts,
+        plus private posts from followed users. For everyone else, it only shows public
+        posts. Posts are sorted by counts of likes and comments and are ordered by
+        creation date.
+        """
+        user = self.request.user
+        if user.is_authenticated:
+            queryset = Post.objects.filter(
+                Q(is_private=False) | Q(owner=user)
+            ).annotate(
+                likes_count=Count('likes', distinct=True),
+                comments_count=Count('comment', distinct=True)
+            ).order_by('-created_at')
+        else:
+            queryset = Post.objects.filter(is_private=False).annotate(
+                likes_count=Count('likes', distinct=True),
+                comments_count=Count('comment', distinct=True)
+            ).order_by('-created_at')
+    
+        return queryset.distinct()
+
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
