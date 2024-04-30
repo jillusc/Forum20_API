@@ -12,11 +12,15 @@ class CommentList(generics.ListCreateAPIView):
     currently authenticated user. Allows for filtering of comments that
     belong to the authenticated user. 
     """
-    serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Comment.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['post']
+
+    def get_serializer_class(self):
+        if self.request.query_params.get('user_comments') == 'true':
+            return CommentDetailSerializer
+        return CommentSerializer
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
