@@ -1,13 +1,13 @@
 from django.db import IntegrityError
 from rest_framework import serializers
-from .models import Like
+from .models import Bookmark
 
 
-class LikeSerializer(serializers.ModelSerializer):
+class BookmarkSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
-        model = Like
+        model = Bookmark
         fields = ['id', 'created_at', 'owner', 'post']
 
     def create(self, validated_data):
