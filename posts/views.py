@@ -5,6 +5,7 @@ from Forum20_API.permissions import IsOwnerOrReadOnly
 from .models import Post
 from .serializers import PostSerializer
 
+
 class PostList(generics.ListCreateAPIView):
     """
     Enables viewing of posts, and creation of posts only by logged-in users.
@@ -61,12 +62,14 @@ class PostList(generics.ListCreateAPIView):
                 likes_count=Count('likes', distinct=True),
                 comments_count=Count('comment', distinct=True)
             ).order_by('-created_at')
-    
         return queryset.distinct()
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-
+        serializer.save(
+            owner=self.request.user,
+            artist_name=serializer.validated_data.get('artist_name'),
+            year_of_artwork=serializer.validated_data.get('year_of_artwork')
+        )
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     """

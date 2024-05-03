@@ -8,10 +8,12 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=255)
-    content = models.TextField(blank=True)
+    content = models.TextField(blank=True, null=True)
     image = models.ImageField(
         upload_to='images/', default='../default_post_cgivk5', blank=True
     )
+    artist_name = models.CharField(max_length=255, blank=True, null=True)
+    year_of_artwork = models.IntegerField(blank=True, null=True)
 
     class Meta:
         ordering = ['-created_at']
