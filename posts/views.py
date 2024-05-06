@@ -52,7 +52,8 @@ class PostList(generics.ListCreateAPIView):
         user = self.request.user
         if user.is_authenticated:
             queryset = Post.objects.filter(
-                Q(is_private=False) | Q(owner=user)
+                Q(is_private=False) | Q(owner=user) |
+                Q(owner__followed__owner=user, is_private=True)
             ).annotate(
                 likes_count=Count('likes', distinct=True),
                 comments_count=Count('comment', distinct=True)
