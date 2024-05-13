@@ -8,7 +8,7 @@ class PostSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_private = serializers.BooleanField(required=False)
     image = serializers.ImageField(required=False)
-    artist_name = serializers.CharField(max_length=255, required=False)
+    artist_name = serializers.CharField(max_length=255, required=False, allow_blank=True)
     year_of_artwork = serializers.IntegerField(required=False, allow_null=True)
     is_owner = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
