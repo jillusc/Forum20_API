@@ -7,11 +7,14 @@ from likes.serializers import LikeSerializer
 class LikeList(generics.ListCreateAPIView):
     """
     Enables viewing of likes, and adding of likes only by logged-in users.
-    New likes are assigned to the currently authenticated user.
+    Likes are assigned to the currently authenticated user.
     """
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = LikeSerializer
     queryset = Like.objects.all()
+
+    def get_queryset(self):
+        return Like.objects.filter(owner=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)

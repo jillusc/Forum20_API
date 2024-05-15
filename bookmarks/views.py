@@ -5,6 +5,11 @@ from .serializers import BookmarkSerializer
 
 
 class BookmarkList(generics.ListCreateAPIView):
+    """
+    Enables viewing of bookmarked posts, and adding of bookmarks
+    only by logged-in users. Bookmarks are assigned to the
+    currently authenticated user.
+    """
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = BookmarkSerializer
     queryset = Bookmark.objects.all()
@@ -16,6 +21,10 @@ class BookmarkList(generics.ListCreateAPIView):
         return Bookmark.objects.filter(owner=self.request.user)
 
 class BookmarkDetail(generics.RetrieveDestroyAPIView):
+    """
+    Enables viewing of bookmarked posts, and deletion of 
+    bookmarks only by their owner.
+    """
     permission_classes = [IsOwnerOrReadOnly]
     serializer_class = BookmarkSerializer
     queryset = Bookmark.objects.all()
