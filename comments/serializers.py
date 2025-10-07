@@ -8,8 +8,6 @@ class CommentSerializer(serializers.ModelSerializer):
     is_owner = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
-    created_at = serializers.SerializerMethodField()
-    updated_at = serializers.SerializerMethodField()
     post_id = serializers.ReadOnlyField(source='post.id')
 
     def get_is_owner(self, obj):
@@ -26,8 +24,10 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = [
             'id', 'owner', 'is_owner', 'profile_id', 'profile_image',
-            'post', 'created_at', 'updated_at', 'content', 'post_id'
+            'post',  'post_id', 'created_at', 'updated_at', 'content'
         ]
+        read_only_fields = ['created_at', 'updated_at']
+
 
 
 class CommentDetailSerializer(serializers.ModelSerializer):
@@ -35,8 +35,6 @@ class CommentDetailSerializer(serializers.ModelSerializer):
     is_owner = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
-    created_at = serializers.SerializerMethodField()
-    updated_at = serializers.SerializerMethodField()
     post = serializers.ReadOnlyField(source='post.id')
     post_title = serializers.ReadOnlyField(source='post.title')
 
@@ -54,5 +52,6 @@ class CommentDetailSerializer(serializers.ModelSerializer):
         model = Comment
         fields = [
             'id', 'owner', 'is_owner', 'profile_id', 'profile_image',
-            'post', 'created_at', 'updated_at', 'content', 'post_title'
+            'post', 'post_title', 'created_at', 'updated_at', 'content'
         ]
+        read_only_fields = ['created_at', 'updated_at']
