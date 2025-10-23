@@ -16,7 +16,10 @@ class BookmarkList(generics.ListCreateAPIView):
     queryset = Bookmark.objects.all()
 
     def get_queryset(self):
-        return Bookmark.objects.filter(owner=self.request.user)
+        user = self.request.user
+        if user.is_anonymous:
+            return Bookmark.objects.none()  # empty queryset for anonymous users
+        return Bookmark.objects.filter(owner=user)
 
     def create(self, request, *args, **kwargs):
         post_id = request.data.get("post")

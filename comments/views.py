@@ -26,6 +26,8 @@ class CommentList(generics.ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
     def get_queryset(self):
+        if self.request.user.is_anonymous:
+            return self.queryset.none()
         queryset = super().get_queryset()
         if self.request.query_params.get('user_comments') == 'true':
             return queryset.filter(owner=self.request.user)

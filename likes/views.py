@@ -15,7 +15,11 @@ class LikeList(generics.ListCreateAPIView):
     queryset = Like.objects.all()
 
     def get_queryset(self):
-        return Like.objects.filter(owner=self.request.user)
+        user = self.request.user
+        if user.is_anonymous:
+            return Like.objects.none()  # empty queryset for anonymous users
+        return Like.objects.filter(owner=user)
+
 
     def create(self, request, *args, **kwargs):
         post = request.data.get('post')
