@@ -32,6 +32,7 @@ class PostList(generics.ListCreateAPIView):
         'owner__username',
         'title',
         'content',
+        'artist_name', 
     ]
     ordering_fields = [
         'likes_count',
@@ -50,19 +51,32 @@ class PostList(generics.ListCreateAPIView):
         creation date.
         """
         user = self.request.user
+        search_term = self.request.query_params.get("search", "").strip()
+
+        # Base queryset depending on user authentication
         if user.is_authenticated:
             queryset = Post.objects.filter(
                 Q(is_private=False) | Q(owner=user) |
                 Q(owner__followed__owner=user, is_private=True)
-            ).annotate(
-                likes_count=Count('likes', distinct=True),
-                comments_count=Count('comment', distinct=True)
-            ).order_by('-created_at')
+
+            )
         else:
-            queryset = Post.objects.filter(is_private=False).annotate(
-                likes_count=Count('likes', distinct=True),
-                comments_count=Count('comment', distinct=True)
-            ).order_by('-created_at')
+            queryset = Post.objects.filter(is_private=False)
+    
+        # Annotate likes and comments counts
+        queryset = queryset.annotate(
+            likes_count=Count('likes', distinct=True),
+            comments_count=Count('comment', distinct=True)
+        ).order_by('-created_at')
+
+        # Apply search filtering if search_term exists
+        if search_term:
+            queryset = queryset.filter(
+                Q(title__icontains=search_term) |
+                Q(content__icontains=search_term) |
+                Q(artist_name__icontains=search_term)
+            )
+
         return queryset.distinct()
 
     def perform_create(self, serializer):
