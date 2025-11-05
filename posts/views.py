@@ -56,10 +56,12 @@ class PostList(generics.ListCreateAPIView):
         # Base queryset depending on user authentication
         if user.is_authenticated:
             queryset = Post.objects.filter(
-                Q(is_private=False) | Q(owner=user) |
+                Q(is_private=False) |
+                Q(owner=user) |
                 Q(owner__followed__owner=user, is_private=True)
-
             )
+            if 'owner__followed__owner__profile' in self.request.query_params:
+                queryset = queryset.exclude(owner=user)
         else:
             queryset = Post.objects.filter(is_private=False)
     
