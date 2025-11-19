@@ -65,6 +65,8 @@ ALLOWED_HOSTS = [
     os.getenv('ALLOWED_HOST'),
     'localhost',
     '127.0.0.1',
+    'forum20-api.onrender.com',
+
 ]
 
 # Application definition
