@@ -120,6 +120,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:4173",
     "http://127.0.0.1:5173",
     "http://127.0.0.1:4173",
+    "https://unique-torrone-a1d6bb.netlify.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -128,6 +129,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:4173",
     "http://127.0.0.1:4173",
     "https://forum20-api.onrender.com",
+    "https://unique-torrone-a1d6bb.netlify.app",
 ]
 
 ROOT_URLCONF = 'Forum20_API.urls'
